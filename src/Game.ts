@@ -43,6 +43,7 @@ class PlayerModel {
     speed: number
     length: number
     vx: number
+    can_jump: boolean
 
     constructor() {
         this.position = new Point(0, 0)
@@ -50,6 +51,7 @@ class PlayerModel {
         this.speed = 0
         this.length = 1
         this.vx = 0
+        this.can_jump = false
     }
 
 }
@@ -473,6 +475,7 @@ export async function start() {
     surface.set_root(root);
     surface.start()
 
+
     surface.on_input((e) => {
         if (e.type === KEYBOARD_DOWN) {
             if (gameover) {
@@ -486,8 +489,10 @@ export async function start() {
             if (e.key === 'ArrowLeft' || e.key==='a') turn_to(new Point(-1  , 0));
             if (e.key === 'ArrowRight' || e.key==='d') turn_to(new Point(+1, 0));
             if (e.key === 'ArrowUp' || e.key==='w') {
-                baken.vx = JUMP_POWER
-                turn_to(new Point(+0, - 2));
+                if(baken.can_jump === true) {
+                    baken.vx = JUMP_POWER
+                    turn_to(new Point(+0, - 2));
+                }
             }
         }
     })
@@ -534,8 +539,11 @@ export async function start() {
         let tile_position = new Point(Math.floor(new_position.x), Math.floor(new_position.y)+1)
         let spot = board.get_at(tile_position)
         if (spot === WALL) {
+            baken.can_jump = true
             baken.vx = 0
             return
+        } else {
+            baken.can_jump = false
         }
         baken.position = new_position
     }
