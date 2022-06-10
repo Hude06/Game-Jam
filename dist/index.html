@@ -534,8 +534,11 @@ var _appModel = require("./app-model");
 // @ts-ignore
 var _jumpPng = require("../assets/Free/Main Characters/Virtual Guy/Jump.png");
 var _jumpPngDefault = parcelHelpers.interopDefault(_jumpPng);
+// @ts-ignore
+var _melonPng = require("../assets/Free/Items/Fruits/Melon.png");
+var _melonPngDefault = parcelHelpers.interopDefault(_melonPng);
 var GRAVITY = 0.01;
-const JUMP_POWER = -0.2;
+const JUMP_POWER = -0.3;
 const gravitySpeed = 0;
 const SCALE = 3;
 const START_POSITION = new (0, _thneedGfx.Point)(15, 18);
@@ -581,7 +584,7 @@ class GridView extends (0, _thneedGfx.BaseParentView) {
         this.model.forEach((w, x, y)=>{
             let color = "white";
             if (w === EMPTY) color = "white";
-            if (w === WALL) color = "blue";
+            if (w === WALL) color = "teal";
             let xx = x * 8 * SCALE;
             let yy = y * 8 * SCALE;
             g.fill(new (0, _thneedGfx.Rect)(xx, yy, 8 * SCALE, 8 * SCALE), color);
@@ -640,7 +643,7 @@ class ScoreView extends (0, _thneedGfx.BaseView) {
         g.ctx.translate(this.position().x, this.position().y);
         // g.fillBackgroundSize(this.size(),'red')
         this.set_size(new (0, _thneedGfx.Size)(400, 480));
-        g.fillBackgroundSize(this.size(), "#00ffab");
+        g.fillBackgroundSize(this.size(), "#70ffd0");
         let lines = [];
         lines.forEach((str, i)=>{
             g.fillStandardText(str, 10, 16 * i * 4 + 32, "base", 2);
@@ -663,10 +666,8 @@ class BillView extends (0, _thneedGfx.BaseView) {
         let current = Date.now();
         let diff = current - this.score.start_time;
         let diff_seconds = Math.floor(diff / 1000);
-        if (this.last_time === 29 && diff_seconds === 30) // this.score.bill = this.score.bill + 1
-        this.score.start_time = current;
         this.last_time = diff_seconds;
-        g.fillBackgroundSize(this.size(), "#00ffab");
+        g.fillBackgroundSize(this.size(), "#70ffd0");
         let lines = [];
         lines.forEach((str, i)=>{
             g.fillStandardText(str, 10, 16 * i * 4 + 32, "base", 2);
@@ -674,7 +675,7 @@ class BillView extends (0, _thneedGfx.BaseView) {
         g.ctx.restore();
     }
     layout(g, available) {
-        this.set_size(new (0, _thneedGfx.Size)(288, 477));
+        this.set_size(new (0, _thneedGfx.Size)(289, 480));
         return this.size();
     }
 }
@@ -772,17 +773,18 @@ class PlayerView extends (0, _thneedGfx.BaseView) {
         super("image-view");
         this.model = model;
         this.image = new Image();
+        this.image2 = new Image();
         this.image.src = (0, _jumpPngDefault.default);
+        this.image2.src = (0, _melonPngDefault.default);
     }
     draw(g) {
         // g.fillBackgroundSize(this.size(),'red')
         g.ctx.save();
         g.ctx.translate(GRID_POSITION.x, GRID_POSITION.y);
         g.ctx.drawImage(this.image, this.model.position.x * 8 * SCALE - 5, this.model.position.y * 8 * SCALE - 7);
+        g.ctx.drawImage(this.image2, this.model.position.x * 8 * SCALE - 5, this.model.position.y * 8 * SCALE - 7);
         // g.ctx.strokeRect(this.model.position.x*8*SCALE, this.model.position.y*8*SCALE,8*SCALE,8*SCALE)
         g.ctx.beginPath();
-        g.ctx.rect(200, 200, 150, 100);
-        g.ctx.stroke();
         g.ctx.fill();
         g.ctx.restore();
     }
@@ -912,6 +914,14 @@ async function start() {
         let new_position = baken.position.add(off);
         let tile_position = new (0, _thneedGfx.Point)(Math.floor(new_position.x), Math.floor(new_position.y) + 1);
         let spot = board.get_at(tile_position);
+        board.set_xy(9, 16, WALL);
+        board.set_xy(10, 13, WALL);
+        board.set_xy(12, 11, WALL);
+        board.set_xy(1, 11, WALL);
+        board.set_xy(2, 11, WALL);
+        board.set_xy(3, 11, WALL);
+        board.set_xy(4, 11, WALL);
+        board.set_xy(5, 11, WALL);
         if (spot === WALL) {
             baken.can_jump = true;
             baken.vx = 0;
@@ -933,7 +943,7 @@ async function start() {
     requestAnimationFrame(refresh);
 }
 
-},{"thneed-gfx":"1LEIW","./Game.json":"f5fNI","./models":"kqDow","./app-model":"2XscX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/Free/Main Characters/Virtual Guy/Jump.png":"5rNK2"}],"1LEIW":[function(require,module,exports) {
+},{"thneed-gfx":"1LEIW","./Game.json":"f5fNI","./models":"kqDow","./app-model":"2XscX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/Free/Main Characters/Virtual Guy/Jump.png":"5rNK2","../assets/Free/Items/Fruits/Melon.png":"5fEGK"}],"1LEIW":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CoolEvent", ()=>$8a29e9b0d3dc349c$export$aa8e9462579016b1);
@@ -4113,7 +4123,10 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}]},["9nmnc","81u0S"], "81u0S", "parcelRequire46ba")
+},{}],"5fEGK":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("fjtzB") + "Melon.5e94124c.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}]},["9nmnc","81u0S"], "81u0S", "parcelRequire46ba")
 
 </script>
 </body>

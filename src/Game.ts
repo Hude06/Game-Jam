@@ -20,9 +20,12 @@ import {GridModel} from "./models";
 import {Doc} from "./app-model";
 // @ts-ignore
 import IdleImage from "../assets/Free/Main Characters/Virtual Guy/Jump.png"
+// @ts-ignore
+import Fruit from "../assets/Free/Items/Fruits/Melon.png"
+
 import { type } from "express/lib/response";
 var GRAVITY = 0.01    
-const JUMP_POWER = -0.2
+const JUMP_POWER = -0.3
 const gravitySpeed = 0;
 const SCALE = 3
 const START_POSITION = new Point(15, 18)
@@ -92,7 +95,7 @@ class GridView extends BaseParentView {
         this.model.forEach((w, x, y) => {
             let color = 'white'
             if (w === EMPTY) color = 'white'
-            if (w === WALL) color = 'blue'
+            if (w === WALL) color = 'teal'
             let xx = x * 8 * SCALE
             let yy = y * 8 * SCALE
             g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
@@ -170,7 +173,7 @@ class ScoreView extends BaseView {
         g.ctx.translate(this.position().x, this.position().y)
         // g.fillBackgroundSize(this.size(),'red')
         this.set_size(new Size(400, 480))
-        g.fillBackgroundSize(this.size(), '#00ffab')
+        g.fillBackgroundSize(this.size(), '#70ffd0')
 
 
         let lines = [
@@ -207,12 +210,8 @@ class BillView extends BaseView {
         let current = Date.now()
         let diff = current - this.score.start_time
         let diff_seconds = Math.floor(diff / 1000)
-        if (this.last_time === 29 && diff_seconds === 30) {
-            // this.score.bill = this.score.bill + 1
-            this.score.start_time = current
-        }
         this.last_time = diff_seconds
-        g.fillBackgroundSize(this.size(), '#00ffab')
+        g.fillBackgroundSize(this.size(), '#70ffd0')
         let lines = [
             // `Bill ${this.score.bill}`,
             // `Coins ${this.score.coin}`,
@@ -227,7 +226,7 @@ class BillView extends BaseView {
     }
 
     layout(g: CanvasSurface, available: Size): Size {
-        this.set_size(new Size(288, 477))
+        this.set_size(new Size(289, 480))
         return this.size()
     }
 }
@@ -351,12 +350,17 @@ class DialogView extends BaseView {
 
 class PlayerView extends BaseView {
     private image
+    private image2
+
     private model: PlayerModel;
     constructor(model:PlayerModel) {
         super('image-view')
         this.model = model
         this.image = new Image()
+        this.image2 = new Image()
+
         this.image.src = IdleImage
+        this.image2.src = Fruit
     }
     draw(g: CanvasSurface):void {
         // g.fillBackgroundSize(this.size(),'red')
@@ -368,11 +372,14 @@ class PlayerView extends BaseView {
             //32,
             //32,
             )
+            g.ctx.drawImage(this.image2, 
+                this.model.position.x*8*SCALE - 5,
+                this.model.position.y*8*SCALE - 7,
+                //32,
+                //32,
+                )
         // g.ctx.strokeRect(this.model.position.x*8*SCALE, this.model.position.y*8*SCALE,8*SCALE,8*SCALE)
-
         g.ctx.beginPath();
-        g.ctx.rect(200, 200, 150, 100);
-        g.ctx.stroke();
         g.ctx.fill()
 
 
@@ -538,6 +545,16 @@ export async function start() {
         let new_position = baken.position.add(off)
         let tile_position = new Point(Math.floor(new_position.x), Math.floor(new_position.y)+1)
         let spot = board.get_at(tile_position)
+        board.set_xy(9,16,WALL)
+        board.set_xy(10,13,WALL)
+        board.set_xy(12,11,WALL)
+        board.set_xy(1,11,WALL)
+        board.set_xy(2,11,WALL)
+        board.set_xy(3,11,WALL)
+        board.set_xy(4,11,WALL)
+        board.set_xy(5,11,WALL)
+
+
         if (spot === WALL) {
             baken.can_jump = true
             baken.vx = 0
