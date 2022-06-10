@@ -534,6 +534,8 @@ var _appModel = require("./app-model");
 // @ts-ignore
 var _jumpPng = require("../assets/Free/Main Characters/Virtual Guy/Jump.png");
 var _jumpPngDefault = parcelHelpers.interopDefault(_jumpPng);
+const GRAVITY = 0.03;
+const gravitySpeed = 0;
 const SCALE = 3;
 const START_POSITION = new (0, _thneedGfx.Point)(15, 18);
 const CANVAS_SIZE = new (0, _thneedGfx.Size)(46, 20);
@@ -858,8 +860,7 @@ async function start() {
             }
             if (e.key === "ArrowLeft" || e.key === "a") turn_to(new (0, _thneedGfx.Point)(-1, 0));
             if (e.key === "ArrowRight" || e.key === "d") turn_to(new (0, _thneedGfx.Point)(1, 0));
-            if (e.key === "ArrowUp" || e.key === "w") turn_to(new (0, _thneedGfx.Point)(0, -1));
-            if (e.key === "ArrowDown" || e.key === "s") turn_to(new (0, _thneedGfx.Point)(0, 1));
+            if (e.key === "ArrowUp" || e.key === "w") turn_to(new (0, _thneedGfx.Point)(0, -2));
         }
     });
     let playing = false;
@@ -898,34 +899,12 @@ async function start() {
         let new_position = baken.position.add(off);
         let spot = board.get_at(new_position);
         if (spot === WALL) return;
-        // if (spot === COIN) {
-        //     board.set_at(new_position, EMPTY)
-        //     score.coin += 1
-        //     spawn_object(COIN)
-        //     return        
-        // }
-        // if (spot === DOOR) {
-        //     room_view.set_visible(true)
-        //     pay_button.classList.remove("visible")
-        // }
-        // if (spot === TOSTER) {
-        //     toaster_view.set_visible(true)
-        //     world_button.classList.add("visible")
-        //     toast.classList.add("visible")
-        //     return
-        // }
         baken.position = new_position;
     }
     function process_tick() {
         clock += 1;
-    //if(clock % SPEEDS[snake.speed] !== 0) return
-    // let spot = board.get_at(baken.position);
-    // if (spot === BAKEN) {
-    //     score.lives += 1
-    //     board.set_at(baken.position, EMPTY)
-    //     board.set_at(new Point(randi(1, 16), randi(1, 16)), BAKEN)
-    //     return
-    // }
+        this.gravitySpeed = 1;
+        turn_to(new (0, _thneedGfx.Point)(0, +GRAVITY));
     }
     restart();
     function refresh() {

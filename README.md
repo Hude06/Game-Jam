@@ -1,2 +1,2 @@
 # UnderCooked
-This is a game called Cook the baken where you collect baken and sell it.
+This game is called UnderCooked where you have to run around killing fruit monster that drop fruit, then you use that fruit to make the smoothies to lower the hunger of the mob of customers.

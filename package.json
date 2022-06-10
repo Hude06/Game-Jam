@@ -9,5 +9,16 @@
   "scripts": {
     "dev": "npx parcel src/index.html",
     "build": "npx parcel build --public-url ./ src/index.html"
+  },
+  "devDependencies": {
+    "browserify-zlib": "^0.2.0",
+    "crypto-browserify": "^3.12.0",
+    "events": "^3.3.0",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "querystring-es3": "^0.2.1",
+    "stream-browserify": "^3.0.0",
+    "stream-http": "^3.2.0",
+    "util": "^0.12.4"
   }
 }

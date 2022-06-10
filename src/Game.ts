@@ -20,7 +20,9 @@ import {GridModel} from "./models";
 import {Doc} from "./app-model";
 // @ts-ignore
 import IdleImage from "../assets/Free/Main Characters/Virtual Guy/Jump.png"
-
+import { type } from "express/lib/response";
+const GRAVITY = 0.03    
+const gravitySpeed = 0;
 const SCALE = 3
 const START_POSITION = new Point(15, 18)
 const CANVAS_SIZE = new Size(46, 20)
@@ -149,9 +151,9 @@ class GridView extends BaseParentView {
 class ScoreView extends BaseView {
     private score: ScoreModel;
     private font: SpriteFont;
-    private Baken: BakenModel;
+    private Baken: PlayerModel;
 
-    constructor(score: ScoreModel, baken: BakenModel, font: SpriteFont, coin_sprite:Sprite) {
+    constructor(score: ScoreModel, baken: PlayerModel, font: SpriteFont, coin_sprite:Sprite) {
         super('score-view')
         this.score = score;
         this.Baken == baken;
@@ -185,10 +187,10 @@ class ScoreView extends BaseView {
 class BillView extends BaseView {
     private score: ScoreModel;
     private font: SpriteFont;
-    private Baken: BakenModel;
+    private Baken: PlayerModel;
     private last_time: number;
 
-    constructor(score: ScoreModel, baken: BakenModel, font: SpriteFont) {
+    constructor(score: ScoreModel, baken: PlayerModel, font: SpriteFont) {
         super('score-view')
         this.score = score;
         this.Baken == baken;
@@ -470,10 +472,9 @@ export async function start() {
                 nextLevel()
             }
 
-            if (e.key === 'ArrowLeft' || e.key==='a') turn_to(new Point(-1, 0));
+            if (e.key === 'ArrowLeft' || e.key==='a') turn_to(new Point(-1  , 0));
             if (e.key === 'ArrowRight' || e.key==='d') turn_to(new Point(+1, 0));
-            if (e.key === 'ArrowUp' || e.key==='w') turn_to(new Point(+0, - 1));
-            if (e.key === 'ArrowDown' || e.key === 's') turn_to(new Point(+0, +1));
+            if (e.key === 'ArrowUp' || e.key==='w') turn_to(new Point(+0, - 2));
         }
     })
     let playing = false
@@ -520,40 +521,15 @@ export async function start() {
         if (spot === WALL) {
             return
         }
-        // if (spot === COIN) {
-        //     board.set_at(new_position, EMPTY)
-        //     score.coin += 1
-        //     spawn_object(COIN)
-        //     return        
-        // }
-        // if (spot === DOOR) {
-        //     room_view.set_visible(true)
-        //     pay_button.classList.remove("visible")
-        // }
-        // if (spot === TOSTER) {
-        //     toaster_view.set_visible(true)
-        //     world_button.classList.add("visible")
-        //     toast.classList.add("visible")
-
-        //     return
-        // }
-
-
         baken.position = new_position
     }
 
 
     function process_tick() {
         clock += 1
-        //if(clock % SPEEDS[snake.speed] !== 0) return
+        this.gravitySpeed = 1
+        turn_to(new Point(+0, +GRAVITY))
 
-        // let spot = board.get_at(baken.position);
-        // if (spot === BAKEN) {
-        //     score.lives += 1
-        //     board.set_at(baken.position, EMPTY)
-        //     board.set_at(new Point(randi(1, 16), randi(1, 16)), BAKEN)
-        //     return
-        // }
 
     }
 
@@ -568,4 +544,6 @@ export async function start() {
     requestAnimationFrame(refresh)
 
 }
+
+
 
