@@ -33,6 +33,8 @@ const CANVAS_SIZE = new Size(46, 20)
 const BOARD_SIZE = new Size(20, 20)
 const EMPTY = 0;
 const WALL = 1;
+const FRUIT = 2;
+
 const BAKEN = 4;
 const BILL_POSITION = new Point(8 * SCALE * 0, 8 * SCALE * 0)
 const GRID_POSITION = new Point(8 * SCALE * 12, 8 * SCALE * 0)
@@ -47,6 +49,7 @@ class PlayerModel {
     length: number
     vx: number
     can_jump: boolean
+    FruitVisable: boolean
 
     constructor() {
         this.position = new Point(0, 0)
@@ -55,6 +58,8 @@ class PlayerModel {
         this.length = 1
         this.vx = 0
         this.can_jump = false
+        this.FruitVisable = true
+
     }
 
 }
@@ -96,6 +101,8 @@ class GridView extends BaseParentView {
             let color = 'white'
             if (w === EMPTY) color = 'white'
             if (w === WALL) color = 'teal'
+            if (w === FRUIT) color = 'red'
+
             let xx = x * 8 * SCALE
             let yy = y * 8 * SCALE
             g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
@@ -360,7 +367,7 @@ class PlayerView extends BaseView {
         this.image2 = new Image()
 
         this.image.src = IdleImage
-        this.image2.src = Fruit
+        //this.image2.src = Fruit
     }
     draw(g: CanvasSurface):void {
         // g.fillBackgroundSize(this.size(),'red')
@@ -372,12 +379,12 @@ class PlayerView extends BaseView {
             //32,
             //32,
             )
-            g.ctx.drawImage(this.image2, 
-                this.model.position.x*8*SCALE - 5,
-                this.model.position.y*8*SCALE - 7,
-                //32,
-                //32,
-                )
+            // g.ctx.drawImage(this.image2, 
+            //     this.model.position.x*8*SCALE - 5,
+            //     this.model.position.y*8*SCALE - 7,
+            //     //32,
+            //     //32,
+            //     )
         // g.ctx.strokeRect(this.model.position.x*8*SCALE, this.model.position.y*8*SCALE,8*SCALE,8*SCALE)
         g.ctx.beginPath();
         g.ctx.fill()
@@ -501,6 +508,9 @@ export async function start() {
                     turn_to(new Point(+0, - 2));
                 }
             }
+            if(baken.FruitVisable === false) {
+                console.log("false")
+            }
         }
     })
     let playing = false
@@ -553,7 +563,7 @@ export async function start() {
         board.set_xy(3,11,WALL)
         board.set_xy(4,11,WALL)
         board.set_xy(5,11,WALL)
-
+        board.set_xy(8,11,FRUIT)
 
         if (spot === WALL) {
             baken.can_jump = true
@@ -561,6 +571,13 @@ export async function start() {
             return
         } else {
             baken.can_jump = false
+        }
+        if (spot === FRUIT) {
+            baken.FruitVisable = false
+            baken.can_jump = true
+            return
+        } else {
+            baken.can_jump = false            
         }
         baken.position = new_position
     }

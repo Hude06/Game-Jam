@@ -534,9 +534,6 @@ var _appModel = require("./app-model");
 // @ts-ignore
 var _jumpPng = require("../assets/Free/Main Characters/Virtual Guy/Jump.png");
 var _jumpPngDefault = parcelHelpers.interopDefault(_jumpPng);
-// @ts-ignore
-var _melonPng = require("../assets/Free/Items/Fruits/Melon.png");
-var _melonPngDefault = parcelHelpers.interopDefault(_melonPng);
 var GRAVITY = 0.01;
 const JUMP_POWER = -0.3;
 const gravitySpeed = 0;
@@ -546,6 +543,7 @@ const CANVAS_SIZE = new (0, _thneedGfx.Size)(46, 20);
 const BOARD_SIZE = new (0, _thneedGfx.Size)(20, 20);
 const EMPTY = 0;
 const WALL = 1;
+const FRUIT = 2;
 const BAKEN = 4;
 const BILL_POSITION = new (0, _thneedGfx.Point)(8 * SCALE * 0, 8 * SCALE * 0);
 const GRID_POSITION = new (0, _thneedGfx.Point)(8 * SCALE * 12, 8 * SCALE * 0);
@@ -560,6 +558,7 @@ class PlayerModel {
         this.length = 1;
         this.vx = 0;
         this.can_jump = false;
+        this.FruitVisable = true;
     }
 }
 class ScoreModel {
@@ -585,6 +584,7 @@ class GridView extends (0, _thneedGfx.BaseParentView) {
             let color = "white";
             if (w === EMPTY) color = "white";
             if (w === WALL) color = "teal";
+            if (w === FRUIT) color = "red";
             let xx = x * 8 * SCALE;
             let yy = y * 8 * SCALE;
             g.fill(new (0, _thneedGfx.Rect)(xx, yy, 8 * SCALE, 8 * SCALE), color);
@@ -775,14 +775,19 @@ class PlayerView extends (0, _thneedGfx.BaseView) {
         this.image = new Image();
         this.image2 = new Image();
         this.image.src = (0, _jumpPngDefault.default);
-        this.image2.src = (0, _melonPngDefault.default);
+    //this.image2.src = Fruit
     }
     draw(g) {
         // g.fillBackgroundSize(this.size(),'red')
         g.ctx.save();
         g.ctx.translate(GRID_POSITION.x, GRID_POSITION.y);
         g.ctx.drawImage(this.image, this.model.position.x * 8 * SCALE - 5, this.model.position.y * 8 * SCALE - 7);
-        g.ctx.drawImage(this.image2, this.model.position.x * 8 * SCALE - 5, this.model.position.y * 8 * SCALE - 7);
+        // g.ctx.drawImage(this.image2, 
+        //     this.model.position.x*8*SCALE - 5,
+        //     this.model.position.y*8*SCALE - 7,
+        //     //32,
+        //     //32,
+        //     )
         // g.ctx.strokeRect(this.model.position.x*8*SCALE, this.model.position.y*8*SCALE,8*SCALE,8*SCALE)
         g.ctx.beginPath();
         g.ctx.fill();
@@ -876,6 +881,7 @@ async function start() {
                     turn_to(new (0, _thneedGfx.Point)(0, -2));
                 }
             }
+            if (baken.FruitVisable === false) console.log("false");
         }
     });
     let playing = false;
@@ -922,9 +928,15 @@ async function start() {
         board.set_xy(3, 11, WALL);
         board.set_xy(4, 11, WALL);
         board.set_xy(5, 11, WALL);
+        board.set_xy(8, 11, FRUIT);
         if (spot === WALL) {
             baken.can_jump = true;
             baken.vx = 0;
+            return;
+        } else baken.can_jump = false;
+        if (spot === FRUIT) {
+            baken.FruitVisable = false;
+            baken.can_jump = true;
             return;
         } else baken.can_jump = false;
         baken.position = new_position;
@@ -943,7 +955,7 @@ async function start() {
     requestAnimationFrame(refresh);
 }
 
-},{"thneed-gfx":"1LEIW","./Game.json":"f5fNI","./models":"kqDow","./app-model":"2XscX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/Free/Main Characters/Virtual Guy/Jump.png":"5rNK2","../assets/Free/Items/Fruits/Melon.png":"5fEGK"}],"1LEIW":[function(require,module,exports) {
+},{"thneed-gfx":"1LEIW","./Game.json":"f5fNI","./models":"kqDow","./app-model":"2XscX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../assets/Free/Main Characters/Virtual Guy/Jump.png":"5rNK2"}],"1LEIW":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CoolEvent", ()=>$8a29e9b0d3dc349c$export$aa8e9462579016b1);
@@ -4123,10 +4135,7 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"5fEGK":[function(require,module,exports) {
-module.exports = require("./helpers/bundle-url").getBundleURL("fjtzB") + "Melon.5e94124c.png" + "?" + Date.now();
-
-},{"./helpers/bundle-url":"lgJ39"}]},["9nmnc","81u0S"], "81u0S", "parcelRequire46ba")
+},{}]},["9nmnc","81u0S"], "81u0S", "parcelRequire46ba")
 
 </script>
 </body>
