@@ -21,7 +21,8 @@ import {Doc} from "./app-model";
 // @ts-ignore
 import IdleImage from "../assets/Free/Main Characters/Virtual Guy/Jump.png"
 import { type } from "express/lib/response";
-const GRAVITY = 0.03    
+var GRAVITY = 0.01    
+const JUMP_POWER = -0.2
 const gravitySpeed = 0;
 const SCALE = 3
 const START_POSITION = new Point(15, 18)
@@ -41,12 +42,14 @@ class PlayerModel {
     direction: Point
     speed: number
     length: number
+    vx: number
 
     constructor() {
         this.position = new Point(0, 0)
         this.direction = new Point(0, -1)
         this.speed = 0
         this.length = 1
+        this.vx = 0
     }
 
 }
@@ -345,7 +348,7 @@ class DialogView extends BaseView {
 }
 
 class PlayerView extends BaseView {
-    private image:Image
+    private image
     private model: PlayerModel;
     constructor(model:PlayerModel) {
         super('image-view')
@@ -358,11 +361,19 @@ class PlayerView extends BaseView {
         g.ctx.save()
         g.ctx.translate(GRID_POSITION.x, GRID_POSITION.y)
         g.ctx.drawImage(this.image, 
-            this.model.position.x*8*SCALE,
-            this.model.position.y*8*SCALE,
+            this.model.position.x*8*SCALE - 5,
+            this.model.position.y*8*SCALE - 7,
             //32,
             //32,
             )
+        // g.ctx.strokeRect(this.model.position.x*8*SCALE, this.model.position.y*8*SCALE,8*SCALE,8*SCALE)
+
+        g.ctx.beginPath();
+        g.ctx.rect(200, 200, 150, 100);
+        g.ctx.stroke();
+        g.ctx.fill()
+
+
         g.ctx.restore()
     }
     layout(g: CanvasSurface, available: Size): Size {
@@ -474,7 +485,10 @@ export async function start() {
 
             if (e.key === 'ArrowLeft' || e.key==='a') turn_to(new Point(-1  , 0));
             if (e.key === 'ArrowRight' || e.key==='d') turn_to(new Point(+1, 0));
-            if (e.key === 'ArrowUp' || e.key==='w') turn_to(new Point(+0, - 2));
+            if (e.key === 'ArrowUp' || e.key==='w') {
+                baken.vx = JUMP_POWER
+                turn_to(new Point(+0, - 2));
+            }
         }
     })
     let playing = false
@@ -517,8 +531,10 @@ export async function start() {
 
     function turn_to(off) {
         let new_position = baken.position.add(off)
-        let spot = board.get_at(new_position)
+        let tile_position = new Point(Math.floor(new_position.x), Math.floor(new_position.y)+1)
+        let spot = board.get_at(tile_position)
         if (spot === WALL) {
+            baken.vx = 0
             return
         }
         baken.position = new_position
@@ -527,10 +543,8 @@ export async function start() {
 
     function process_tick() {
         clock += 1
-        this.gravitySpeed = 1
-        turn_to(new Point(+0, +GRAVITY))
-
-
+        baken.vx += GRAVITY
+        turn_to(new Point(+0, baken.vx))
     }
 
     restart()

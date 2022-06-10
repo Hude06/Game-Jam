@@ -534,7 +534,8 @@ var _appModel = require("./app-model");
 // @ts-ignore
 var _jumpPng = require("../assets/Free/Main Characters/Virtual Guy/Jump.png");
 var _jumpPngDefault = parcelHelpers.interopDefault(_jumpPng);
-const GRAVITY = 0.03;
+var GRAVITY = 0.01;
+const JUMP_POWER = -0.2;
 const gravitySpeed = 0;
 const SCALE = 3;
 const START_POSITION = new (0, _thneedGfx.Point)(15, 18);
@@ -554,6 +555,7 @@ class PlayerModel {
         this.direction = new (0, _thneedGfx.Point)(0, -1);
         this.speed = 0;
         this.length = 1;
+        this.vx = 0;
     }
 }
 class ScoreModel {
@@ -775,7 +777,12 @@ class PlayerView extends (0, _thneedGfx.BaseView) {
         // g.fillBackgroundSize(this.size(),'red')
         g.ctx.save();
         g.ctx.translate(GRID_POSITION.x, GRID_POSITION.y);
-        g.ctx.drawImage(this.image, this.model.position.x * 8 * SCALE, this.model.position.y * 8 * SCALE);
+        g.ctx.drawImage(this.image, this.model.position.x * 8 * SCALE - 5, this.model.position.y * 8 * SCALE - 7);
+        // g.ctx.strokeRect(this.model.position.x*8*SCALE, this.model.position.y*8*SCALE,8*SCALE,8*SCALE)
+        g.ctx.beginPath();
+        g.ctx.rect(200, 200, 150, 100);
+        g.ctx.stroke();
+        g.ctx.fill();
         g.ctx.restore();
     }
     layout(g, available) {
@@ -860,7 +867,10 @@ async function start() {
             }
             if (e.key === "ArrowLeft" || e.key === "a") turn_to(new (0, _thneedGfx.Point)(-1, 0));
             if (e.key === "ArrowRight" || e.key === "d") turn_to(new (0, _thneedGfx.Point)(1, 0));
-            if (e.key === "ArrowUp" || e.key === "w") turn_to(new (0, _thneedGfx.Point)(0, -2));
+            if (e.key === "ArrowUp" || e.key === "w") {
+                baken.vx = JUMP_POWER;
+                turn_to(new (0, _thneedGfx.Point)(0, -2));
+            }
         }
     });
     let playing = false;
@@ -897,14 +907,18 @@ async function start() {
     let clock = 0;
     function turn_to(off) {
         let new_position = baken.position.add(off);
-        let spot = board.get_at(new_position);
-        if (spot === WALL) return;
+        let tile_position = new (0, _thneedGfx.Point)(Math.floor(new_position.x), Math.floor(new_position.y) + 1);
+        let spot = board.get_at(tile_position);
+        if (spot === WALL) {
+            baken.vx = 0;
+            return;
+        }
         baken.position = new_position;
     }
     function process_tick() {
         clock += 1;
-        this.gravitySpeed = 1;
-        turn_to(new (0, _thneedGfx.Point)(0, +GRAVITY));
+        baken.vx += GRAVITY;
+        turn_to(new (0, _thneedGfx.Point)(0, baken.vx));
     }
     restart();
     function refresh() {
