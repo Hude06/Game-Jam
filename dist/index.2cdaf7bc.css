@@ -1,0 +1,23 @@
+#grad1 {
+  height: 200px;
+  background-image: linear-gradient(to green, blue, yellow);
+}
+
+body {
+  background-color: #7fffd4;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+}
+
+h1 {
+  text-align: center;
+  font-family: Anton, sans-serif;
+  font-size: 60px;
+}
+
+#center {
+  margin-top: 200px;
+}
+
+/*# sourceMappingURL=index.2cdaf7bc.css.map */

@@ -1,0 +1,80 @@
+button {
+  color: #fff;
+  background-color: #27b1fb;
+  border: none;
+  border-radius: 2px;
+  margin-top: 50px;
+  margin-left: 20px;
+  text-decoration: none;
+  display: none;
+}
+
+button.visible {
+  display: block;
+}
+
+#world-button {
+  font-size: 16px;
+  position: absolute;
+  top: 160px;
+  left: 450px;
+}
+
+#pay-button {
+  font-size: 20px;
+  position: absolute;
+  top: 150px;
+  left: 230px;
+}
+
+#toast {
+  font-size: 98px;
+  position: absolute;
+  top: 250px;
+  left: 525px;
+}
+
+#forward {
+  font-size: 18px;
+  position: absolute;
+  top: 475px;
+  left: 975px;
+}
+
+#grad1 {
+  height: 200px;
+  background-image: linear-gradient(to green, blue, yellow);
+}
+
+body {
+  background-color: #7fffd4;
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+}
+
+h1 {
+  text-align: center;
+  font-family: Anton, sans-serif;
+  font-size: 60px;
+}
+
+.main-button {
+  color: #fff;
+  cursor: pointer;
+  background-color: #27b1fb;
+  border: none;
+  border-radius: 2px;
+  font-size: 12px;
+  text-decoration: none;
+  display: none;
+  position: relative;
+  top: -450px;
+  left: 440px;
+}
+
+.visible {
+  display: block;
+}
+
+/*# sourceMappingURL=Baken.2cdaf7bc.css.map */
