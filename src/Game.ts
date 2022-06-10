@@ -28,7 +28,7 @@ import { type } from "express/lib/response";
 
 // The sprite image frame starts from 0
 let currentFrame = 0;
-var GRAVITY = 0.01    
+var GRAVITY = 0.01   
 const JUMP_POWER = -0.3
 const gravitySpeed = 0;
 const SCALE = 3
@@ -484,9 +484,6 @@ export async function start() {
                     turn_to(new Point(+0, - 2));
                 }
             }
-            if(baken.FruitVisable === false) {
-                console.log("false")
-            }
         }
     })
     let playing = false
@@ -539,18 +536,17 @@ export async function start() {
         board.set_xy(3,11,WALL)
         board.set_xy(4,11,WALL)
         board.set_xy(5,11,WALL)
-        if (baken.FruitVisable === true){
-            board.set_xy(8,11,FRUIT)
+        if (baken.FruitVisable === true) {
+        board.set_xy(8,11,FRUIT)
         } else {
+            baken.FruitVisable = false
+            board.set_xy(8,11,EMPTY)
         }
         if (spot === FRUIT) {
             baken.can_jump = true
-            baken.vx = 0
             baken.FruitVisable = false
+            board.set_xy(8,11,EMPTY)
             return
-        } else {
-            baken.can_jump = false
-            
         }
         if (spot === WALL) {
             baken.can_jump = true
@@ -567,8 +563,6 @@ export async function start() {
         clock += 1
         baken.vx += GRAVITY
         turn_to(new Point(+0, baken.vx))
-                if (baken.FruitVisable === false) {
-        }
         const scale = 2;
 
         let img = new Image();
