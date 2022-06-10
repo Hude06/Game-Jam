@@ -24,6 +24,10 @@ import IdleImage from "../assets/Free/Main Characters/Virtual Guy/Jump.png"
 import Fruit from "../assets/Free/Items/Fruits/Melon.png"
 
 import { type } from "express/lib/response";
+
+
+// The sprite image frame starts from 0
+let currentFrame = 0;
 var GRAVITY = 0.01    
 const JUMP_POWER = -0.3
 const gravitySpeed = 0;
@@ -133,35 +137,8 @@ class GridView extends BaseParentView {
 
 }
 
-  
-// class BakenView extends BaseView {
-//     private model: PlayerModel;
-//     private sprite_slice: Sprite;
-
-//     constructor(model: BakenModel, spritesheet: Sheet) {
-//         super('baken')
-//         this.model = model;
-//         this.sprite_slice = spritesheet.sprites.find(sp => sp.name === 'baken')
-//         this.set_size(new Size(8 * SCALE, 8 * SCALE))
-//     }
-
-//     draw(g: CanvasSurface): void {
-//         g.ctx.imageSmoothingEnabled = false
-//         // g.fill(new Rect(0,0,16,16),'#ff0000')
-//         g.draw_sprite(GRID_POSITION, this.sprite_slice)
-//     }
-
-//     position(): Point {
-//         return new Point(
-//             this.model.position.x * 8 * SCALE,
-//             this.model.position.y * 8 * SCALE
-//         )
-//     }
-
-//     layout(g: CanvasSurface, available: Size): Size {
-//         return this.size()
-//     }
-// }
+let numColumns = 5;
+let numRows = 2;
 
 class ScoreView extends BaseView {
     private score: ScoreModel;
@@ -563,21 +540,25 @@ export async function start() {
         board.set_xy(3,11,WALL)
         board.set_xy(4,11,WALL)
         board.set_xy(5,11,WALL)
-        board.set_xy(8,11,FRUIT)
-
+        if (baken.FruitVisable === true){
+            board.set_xy(8,11,FRUIT)
+        } else {
+        }
+        if (spot === FRUIT) {
+            baken.can_jump = true
+            baken.vx = 0
+            baken.FruitVisable = false
+            return
+        } else {
+            baken.can_jump = false
+            
+        }
         if (spot === WALL) {
             baken.can_jump = true
             baken.vx = 0
             return
         } else {
             baken.can_jump = false
-        }
-        if (spot === FRUIT) {
-            baken.FruitVisable = false
-            baken.can_jump = true
-            return
-        } else {
-            baken.can_jump = false            
         }
         baken.position = new_position
     }
@@ -587,6 +568,8 @@ export async function start() {
         clock += 1
         baken.vx += GRAVITY
         turn_to(new Point(+0, baken.vx))
+                if (baken.FruitVisable === false) {
+        }
     }
 
     restart()
