@@ -539,6 +539,14 @@ var _melonPng = require("../assets/Free/Items/Fruits/Melon.png");
 var _melonPngDefault = parcelHelpers.interopDefault(_melonPng);
 const scale = 2;
 // The sprite image frame starts from 0
+let img = new Image();
+img.src = "https://opengameart.org/sites/default/files/Green-Cap-Character-16x18.png";
+img.onload = function() {
+    init();
+};
+function init() {
+// future animation code goes here
+}
 let currentFrame = 0;
 var GRAVITY = 0.01;
 const JUMP_POWER = -0.3;
@@ -581,7 +589,6 @@ class GridView extends (0, _thneedGfx.BaseParentView) {
         this.wall_top = sheet.sprites.find((s)=>s.name === "wall_top");
         this.wall_bottom = sheet.sprites.find((s)=>s.name === "wall_bottom");
         this.empty = sheet.sprites.find((s)=>s.name === "ground");
-        this.baken = sheet.sprites.find((s)=>s.name === "baken");
     }
     draw(g) {
         g.ctx.imageSmoothingEnabled = false;
@@ -615,29 +622,6 @@ class GridView extends (0, _thneedGfx.BaseParentView) {
 }
 let numColumns = 5;
 let numRows = 2;
-class ScoreView extends (0, _thneedGfx.BaseView) {
-    constructor(score, baken, font, coin_sprite){
-        super("score-view");
-        this.score = score;
-        this.Baken;
-        this.font = font;
-    }
-    draw(g) {
-        g.ctx.save();
-        g.ctx.translate(this.position().x, this.position().y);
-        // g.fillBackgroundSize(this.size(),'red')
-        this.set_size(new (0, _thneedGfx.Size)(400, 480));
-        g.fillBackgroundSize(this.size(), "#70ffd0");
-        let lines = [];
-        lines.forEach((str, i)=>{
-            g.fillStandardText(str, 10, 16 * i * 4 + 32, "base", 2);
-        });
-        g.ctx.restore();
-    }
-    layout(g, available) {
-        return this.size();
-    }
-}
 class RoomView extends (0, _thneedGfx.BaseView) {
     // private score: ScoreModel;
     // private font: SpriteFont;
@@ -647,9 +631,6 @@ class RoomView extends (0, _thneedGfx.BaseView) {
     // this.score = score;
     // this.Baken == baken;
     // this.font = font;
-    }
-    set_visible(visible) {
-        this._visible = visible;
     }
     draw(g) {
         g.ctx.save();
@@ -780,9 +761,6 @@ async function start() {
     let image_view = new PlayerView(baken);
     root.add(image_view);
     let score = new ScoreModel();
-    let score_view = new ScoreView(score, baken, doc.fonts[0], doc.sheets[0].sprites.find((s)=>s.name === "Coin"));
-    score_view.set_position(SCORE_POSITION);
-    board_layer.add(score_view);
     let room_view = new RoomView();
     room_view.set_position(ROOM_POSTION);
     root.add(room_view);

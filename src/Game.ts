@@ -26,6 +26,18 @@ import Fruit from "../assets/Free/Items/Fruits/Melon.png"
 import { type } from "express/lib/response";
 const scale = 2;
 // The sprite image frame starts from 0
+
+let img = new Image();
+img.src = 'https://opengameart.org/sites/default/files/Green-Cap-Character-16x18.png';
+img.onload = function() {
+  init();
+};
+
+
+function init() {
+  // future animation code goes here
+}
+
 let currentFrame = 0;
 var GRAVITY = 0.01   
 const JUMP_POWER = -0.3
@@ -93,7 +105,6 @@ class GridView extends BaseParentView {
         this.wall_top = sheet.sprites.find(s => s.name === 'wall_top')
         this.wall_bottom = sheet.sprites.find(s => s.name === 'wall_bottom')
         this.empty = sheet.sprites.find(s => s.name === 'ground')
-        this.baken = sheet.sprites.find(s => s.name === 'baken')
 
     }
 
@@ -137,38 +148,7 @@ class GridView extends BaseParentView {
 let numColumns = 5;
 let numRows = 2;
 
-class ScoreView extends BaseView {
-    private score: ScoreModel;
-    private font: SpriteFont;
-    private Baken: PlayerModel;
 
-    constructor(score: ScoreModel, baken: PlayerModel, font: SpriteFont, coin_sprite:Sprite) {
-        super('score-view')
-        this.score = score;
-        this.Baken == baken;
-        this.font = font;
-    }
-
-    draw(g: CanvasSurface): void {
-        g.ctx.save()
-        g.ctx.translate(this.position().x, this.position().y)
-        // g.fillBackgroundSize(this.size(),'red')
-        this.set_size(new Size(400, 480))
-        g.fillBackgroundSize(this.size(), '#70ffd0')
-
-
-        let lines = [
-        ]
-        lines.forEach((str, i) => {
-            g.fillStandardText(str, 10, 16 * i * 4 + 32, 'base', 2)
-        })
-        g.ctx.restore()
-    }
-
-    layout(g: CanvasSurface, available: Size): Size {
-        return this.size()
-    }
-}
 
 
 
@@ -186,9 +166,6 @@ class RoomView extends BaseView {
 
     }
 
-    set_visible(visible: boolean) {
-        this._visible = visible
-    }
 
     draw(g: CanvasSurface): void {
         g.ctx.save()
@@ -313,11 +290,14 @@ class PlayerView extends BaseView {
         g.ctx.drawImage(this.sprite,200,300)
         g.ctx.fill()
         g.ctx.restore()
+
+          
     }
     layout(g: CanvasSurface, available: Size): Size {
         this.set_size(available)
         return this.size()
     }
+    
 }
 
 
@@ -356,10 +336,8 @@ export async function start() {
 
 
     let score = new ScoreModel()
-    let score_view = new ScoreView(score, baken, doc.fonts[0],doc.sheets[0].sprites.find(s => s.name === 'Coin'))
 
-    score_view.set_position(SCORE_POSITION)
-    board_layer.add(score_view)
+
 
 
 
