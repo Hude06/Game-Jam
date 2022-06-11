@@ -585,7 +585,7 @@ class GridView extends (0, _thneedGfx.BaseParentView) {
             g.fill(new (0, _thneedGfx.Rect)(xx, yy, 8 * SCALE, 8 * SCALE), color);
             let pt = new (0, _thneedGfx.Point)(xx, yy);
             if (w === EMPTY) g.draw_sprite(pt, this.empty);
-            if (w === FRUIT) g.ctx.drawImage(this.sprite, 188, 260, 544, 32);
+            if (w === FRUIT) g.ctx.drawImage(this.sprite, 236, 260, 544, 32);
             if (w === WALL) {
                 if (x === 0) g.draw_sprite(pt, this.wall_left);
                 if (x === this.model.w - 1) g.draw_sprite(pt, this.wall_right);
@@ -727,7 +727,6 @@ async function start() {
         board.set_xy(5, 11, WALL);
         board.set_xy(6, 11, WALL);
         if (baken.FruitVisable === true) board.set_xy(10, 11, FRUIT);
-        if (baken.MonsterVisable === true) board.set_xy(1, 10, MONSTER);
         if (spot === MONSTER) {
             board.set_xy(1, 10, EMPTY);
             baken.MonsterVisable = false;
@@ -737,7 +736,7 @@ async function start() {
             baken.can_jump = true;
             baken.FruitVisable = false;
             baken.vx = 0;
-            board.set_xy(8, 11, EMPTY);
+            board.set_xy(10, 11, EMPTY);
             return;
         }
         if (spot === WALL) {
