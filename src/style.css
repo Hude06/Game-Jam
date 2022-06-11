@@ -1,13 +1,12 @@
 
 #grad1 {
   height: 200px;
-  background-image: linear-gradient(to green, blue, yellow);
 }
 body {
-    background-color: aquamarine;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: aqua;
 }
 
 h1 {
@@ -18,6 +17,10 @@ h1 {
 #center{ 
     margin-top: 200px;
 }
+canvas{
+background-color: aqua;
+}
+
 
 
 

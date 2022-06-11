@@ -21,8 +21,7 @@ import {Doc} from "./app-model";
 // @ts-ignore
 import IdleImage from "../Main Characters/Virtual Guy/Jump.png"
 // @ts-ignore
-import Fruit from "../assets/Free/Items/Fruits/Melon.png"
-
+import Fruit from "../assets/Free/Items/Fruits/Strawberry.png"
 import { type } from "express/lib/response";
 const scale = 2;
 // The sprite image frame starts from 0
@@ -39,7 +38,7 @@ function init() {
 }
 
 let currentFrame = 0;
-var GRAVITY = 0.01   
+var GRAVITY = 0.01
 const JUMP_POWER = -0.3
 const gravitySpeed = 0;
 const SCALE = 3
@@ -51,9 +50,7 @@ const WALL = 1;
 const FRUIT = 2;
 
 const BAKEN = 4;
-const BILL_POSITION = new Point(8 * SCALE * 0, 8 * SCALE * 0)
 const GRID_POSITION = new Point(8 * SCALE * 12, 8 * SCALE * 0)
-const SCORE_POSITION = new Point(8 * SCALE * 16, 8 * SCALE * 0)
 const HOME_POSTION = new Point(14 * SCALE * -4, 8 * SCALE * 0)
 const ROOM_POSTION = new Point(14 * SCALE * -4, 8 * SCALE * 0)
 
@@ -79,14 +76,8 @@ class PlayerModel {
 
 }
 
-class ScoreModel {
-    start_time: number;
-    CookedBaken: number;
 
-    constructor() {
-        this.CookedBaken = 0
-    }
-}
+
 
 class GridView extends BaseParentView {
     private model: GridModel;
@@ -136,7 +127,7 @@ class GridView extends BaseParentView {
     }
 
     layout(g: CanvasSurface, available: Size): Size {
-        this.set_size(new Size(this.model.w * 8 * SCALE, this.model.h * 8 * SCALE))
+        this.set_size(new Size(this.model.w * 8 * SCALE, this.model.h * 6 * SCALE))
         return this.size()
     }
 
@@ -172,7 +163,7 @@ class RoomView extends BaseView {
         g.ctx.translate(this.position().x, this.position().y)
         // g.fillBackgroundSize(this.size(),'red')
         //this.set_size(new Size(,480))
-        g.fillBackgroundSize(this.size(), '#a9aaaa')
+        g.fillBackgroundSize(this.size(), '#4287f5')
 
 
         let lines = [
@@ -201,7 +192,7 @@ class SplashView extends BaseView {
     }
 
     draw(g: CanvasSurface): void {
-        g.fillBackgroundSize(this.size(), 'rgba(255,255,255,1.0)')
+        g.fillBackgroundSize(this.size(), 'rgba(66, 135, 245)')
         g.ctx.save()
         g.ctx.strokeStyle = 'black'
         g.ctx.lineWidth = 4
@@ -230,40 +221,7 @@ class SplashView extends BaseView {
         this._visible = visible
     }
 }
-class DialogView extends BaseView {
-    private text: string;
-    private map: Tilemap;
-    private sheet: Sheet;
-    constructor(map: Tilemap, sheet: Sheet) {
-        super('dialog-view');
-        this.map = map
-        this.sheet = sheet
-    }
-    draw(g: CanvasSurface): void {
-        g.fillBackgroundSize(this.size(), 'rgba(255,255,255,0.0)')
-        let sprite_w = this.sheet.sprites[0].w
-        let map_w = this.map.w * sprite_w * SCALE
-        let map_scale = SCALE * sprite_w
-        let map_x = (this.size().w - map_w) / 2
-        let text_w = g.measureText(this.text, 'base').w * 2
-        let text_x = (this.size().w - text_w) / 2
-        g.draw_tilemap(this.map, this.sheet, map_x, 16, map_scale)
-        g.fillStandardText(this.text, text_x, 150, 'base', 2)
-    }
 
-    layout(g: CanvasSurface, available: Size): Size {
-        this.set_size(available)
-        return this.size()
-    }
-
-    set_visible(visible: boolean) {
-        this._visible = visible
-    }
-
-    set_text(died: string) {
-        this.text = died
-    }
-}
 
 class PlayerView extends BaseView {
     private image
@@ -287,7 +245,7 @@ class PlayerView extends BaseView {
             this.model.position.x*8*SCALE - 5,
             this.model.position.y*8*SCALE - 7,)
         g.ctx.beginPath();
-        g.ctx.drawImage(this.sprite,200,300)
+        g.ctx.drawImage(this.sprite,183 ,257, 700,40)
         g.ctx.fill()
         g.ctx.restore()
 
@@ -321,10 +279,7 @@ export async function start() {
     board_layer.add(board_view);
     root.add(board_layer);
 
-    let home_view = new DialogView(doc.maps.find(m => m.name === 'home'), doc.sheets[0]);
-    root.add(home_view)
-    home_view.set_position(HOME_POSTION)
-    home_view.set_visible(false)
+
 
     
     // let baken_view = new BakenView(baken, doc.sheets[0])
@@ -335,7 +290,6 @@ export async function start() {
     root.add(image_view)
 
 
-    let score = new ScoreModel()
 
 
 
@@ -353,9 +307,6 @@ export async function start() {
 
     let splash_layer = new SplashView();
     root.add(splash_layer);
-    let dialog_layer = new DialogView(doc.maps.find(m => m.name === 'dialog'), doc.sheets[0]);
-    root.add(dialog_layer)
-    dialog_layer.set_visible(false)
 
     surface.set_root(root);
     surface.start()
@@ -385,23 +336,11 @@ export async function start() {
     let gameover = true
     function restart() {
         // score.lives = 0
-        // score.coin = 0
-        // score.bill = 0
-        score.start_time = Date.now()
-        score.CookedBaken = 0
+
 
         baken.position.copy_from(START_POSITION);
     }
 
-    // function spawn_object(type:number) {
-    //     while (true) {
-    //         let pt = new Point(randi(1,16), randi(1,16))
-    //         if(board.get_at(pt) === EMPTY) {
-    //             board.set_at(pt, type)
-    //             break;
-    //         }
-    //     }
-    // }
     function nextLevel() {
         board.fill_all(() => EMPTY);
         board.fill_row(0, () => WALL)
@@ -411,7 +350,6 @@ export async function start() {
 
     }
 
-    let clock = 0
 
     function turn_to(off) {
         let new_position = baken.position.add(off)
@@ -449,7 +387,6 @@ export async function start() {
 
 
     function process_tick() {
-        clock += 1
         baken.vx += GRAVITY
         turn_to(new Point(+0, baken.vx))
     
