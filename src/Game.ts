@@ -19,13 +19,12 @@ import snake_json from "./Game.json";
 import {GridModel} from "./models";
 import {Doc} from "./app-model";
 // @ts-ignore
-import IdleImage from "../assets/Free/Main Characters/Virtual Guy/Jump.png"
+import IdleImage from "../Main Characters/Virtual Guy/Jump.png"
 // @ts-ignore
 import Fruit from "../assets/Free/Items/Fruits/Melon.png"
 
 import { type } from "express/lib/response";
-
-
+const scale = 2;
 // The sprite image frame starts from 0
 let currentFrame = 0;
 var GRAVITY = 0.01   
@@ -106,7 +105,6 @@ class GridView extends BaseParentView {
             if (w === EMPTY) color = 'white'
             if (w === WALL) color = 'teal'
             if (w === FRUIT) color = 'red'
-
             let xx = x * 8 * SCALE
             let yy = y * 8 * SCALE
             g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
@@ -160,9 +158,6 @@ class ScoreView extends BaseView {
 
 
         let lines = [
-
-
-
         ]
         lines.forEach((str, i) => {
             g.fillStandardText(str, 10, 16 * i * 4 + 32, 'base', 2)
@@ -175,44 +170,6 @@ class ScoreView extends BaseView {
     }
 }
 
-class BillView extends BaseView {
-    private score: ScoreModel;
-    private font: SpriteFont;
-    private Baken: PlayerModel;
-    private last_time: number;
-
-    constructor(score: ScoreModel, baken: PlayerModel, font: SpriteFont) {
-        super('score-view')
-        this.score = score;
-        this.Baken == baken;
-        this.font = font;
-    }
-
-    draw(g: CanvasSurface): void {
-        g.ctx.save()
-        let current = Date.now()
-        let diff = current - this.score.start_time
-        let diff_seconds = Math.floor(diff / 1000)
-        this.last_time = diff_seconds
-        g.fillBackgroundSize(this.size(), '#70ffd0')
-        let lines = [
-            // `Bill ${this.score.bill}`,
-            // `Coins ${this.score.coin}`,
-            // `CookedBaken ${this.score.CookedBaken}`,
-
-
-        ]
-        lines.forEach((str, i) => {
-            g.fillStandardText(str, 10, 16 * i * 4 + 32, 'base', 2)
-        })
-        g.ctx.restore()
-    }
-
-    layout(g: CanvasSurface, available: Size): Size {
-        this.set_size(new Size(289, 480))
-        return this.size()
-    }
-}
 
 
 
@@ -333,16 +290,16 @@ class DialogView extends BaseView {
 
 class PlayerView extends BaseView {
     private image
-    private image2
+    private sprite
 
     private model: PlayerModel;
     constructor(model:PlayerModel) {
         super('image-view')
         this.model = model
         this.image = new Image()
-        this.image2 = new Image()
-
+        this.sprite = new Image()
         this.image.src = IdleImage
+        this.sprite.src = Fruit
         //this.image2.src = Fruit
     }
     draw(g: CanvasSurface):void {
@@ -351,21 +308,10 @@ class PlayerView extends BaseView {
         g.ctx.translate(GRID_POSITION.x, GRID_POSITION.y)
         g.ctx.drawImage(this.image, 
             this.model.position.x*8*SCALE - 5,
-            this.model.position.y*8*SCALE - 7,
-            //32,
-            //32,
-            )
-            // g.ctx.drawImage(this.image2, 
-            //     this.model.position.x*8*SCALE - 5,
-            //     this.model.position.y*8*SCALE - 7,
-            //     //32,
-            //     //32,
-            //     )
-        // g.ctx.strokeRect(this.model.position.x*8*SCALE, this.model.position.y*8*SCALE,8*SCALE,8*SCALE)
+            this.model.position.y*8*SCALE - 7,)
         g.ctx.beginPath();
+        g.ctx.drawImage(this.sprite,200,300)
         g.ctx.fill()
-
-
         g.ctx.restore()
     }
     layout(g: CanvasSurface, available: Size): Size {
@@ -415,9 +361,7 @@ export async function start() {
     score_view.set_position(SCORE_POSITION)
     board_layer.add(score_view)
 
-    let bill = new BillView(score, baken, doc.fonts[0])
-    bill.set_position(BILL_POSITION)
-    board_layer.add(bill)
+
 
 
 
@@ -431,33 +375,6 @@ export async function start() {
 
     let splash_layer = new SplashView();
     root.add(splash_layer);
-
-    // first button
-    // const world_button = document.getElementById('world-button')
-    // world_button.addEventListener('click', () => {
-    //     toaster_view.set_visible(false)
-    //     world_button.classList.remove("visible")
-    //     toast.classList.remove("visible")
-
-    // })
-
-    // let pay_button = document.getElementById("pay-button")
-    // pay_button.addEventListener('click', () => {
-    //     if (score.coin > 1) {
-    //         score.bill -= 1
-    //         score.coin -= 1
-    //     }
-    // })
-
-    // let toast = document.getElementById("toast")
-    // toast.addEventListener('click', () => {
-    //     if (score.lives >= 1) {
-    //         score.lives -= 1
-    //         score.CookedBaken += 1
-    //     }
-    // })
-
-
     let dialog_layer = new DialogView(doc.maps.find(m => m.name === 'dialog'), doc.sheets[0]);
     root.add(dialog_layer)
     dialog_layer.set_visible(false)
@@ -488,7 +405,6 @@ export async function start() {
     })
     let playing = false
     let gameover = true
-
     function restart() {
         // score.lives = 0
         // score.coin = 0
@@ -514,11 +430,6 @@ export async function start() {
         board.fill_col(0, () => WALL)
         board.fill_row(board.h - 1, () => WALL)
         board.fill_col(board.w - 1, () => WALL)
-        // board.set_at(new Point(randi(1, 16), 7), BAKEN )
-        // board.set_at(new Point(10, 1), TOSTER)
-        // board.set_at(new Point(19,9), DOOR)
-        // spawn_object(COIN)
-        // spawn_object(BAKEN)
 
     }
 
@@ -563,66 +474,10 @@ export async function start() {
         clock += 1
         baken.vx += GRAVITY
         turn_to(new Point(+0, baken.vx))
-        const scale = 2;
-
-        let img = new Image();
-        img.src = './assets/Free/Virtual Guy/Run (32x32).png';
-        img.onload = function() {
-        init();
-        };
-
-        let canvas = document.querySelector('canvas');
-        let ctx = canvas.getContext('2d');
-        const width = 32;
-        const height = 30;
-        const scaledWidth = scale * width;
-        const scaledHeight = scale * height;
-
-        function drawFrame(frameX, frameY, canvasX, canvasY) {
-        ctx.drawImage(img,
-                        frameX * width, frameY * height, width, height,
-                        canvasX, canvasY, scaledWidth, scaledHeight);
-        }
-
-        function init() {
-        // drawFrame(0, 0, 0, 0);
-        // drawFrame(1, 0, scaledWidth, 0);
-        // drawFrame(0, 0, scaledWidth * 2, 0);
-        //  drawFrame(2, 0, scaledWidth * 3, 0);
+    
         }
 
 
-        window.requestAnimationFrame(step);
-
-        function step() {
-        // do something
-        window.requestAnimationFrame(step);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawFrame(0, 0, 0, 0);
-        // repeat for each frame
-        }
-
-
-const cycleLoop = [0, 1, 0, 2];
-let currentLoopIndex = 0;
-let frameCount = 0;
-
-function step2() {
-  frameCount++;
-  if (frameCount < 15) {
-    window.requestAnimationFrame(step);
-    return;
-  }
-  frameCount = 3;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawFrame(cycleLoop[currentLoopIndex], 0, 0, 0);
-  currentLoopIndex++;
-  if (currentLoopIndex >= cycleLoop.length) {
-    currentLoopIndex = 0;
-  }
-  window.requestAnimationFrame(step);
-}
-}
 
     restart()
 
