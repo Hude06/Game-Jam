@@ -23,24 +23,10 @@ import IdleImage from "../Main Characters/Virtual Guy/Jump.png"
 // @ts-ignore
 import Fruit from "../assets/Free/Items/Fruits/Strawberry.png"
 import { type } from "express/lib/response";
-const scale = 2;
-// The sprite image frame starts from 0
-
-let img = new Image();
-img.src = 'https://opengameart.org/sites/default/files/Green-Cap-Character-16x18.png';
-img.onload = function() {
-  init();
-};
 
 
-function init() {
-  // future animation code goes here
-}
-
-let currentFrame = 0;
-var GRAVITY = 0.01
-const JUMP_POWER = -0.3
-const gravitySpeed = 0;
+var GRAVITY = 0.02
+const JUMP_POWER = -0.5
 const SCALE = 3
 const START_POSITION = new Point(15, 18)
 const CANVAS_SIZE = new Size(46, 20)
@@ -48,11 +34,7 @@ const BOARD_SIZE = new Size(20, 20)
 const EMPTY = 0;
 const WALL = 1;
 const FRUIT = 2;
-
-const BAKEN = 4;
 const GRID_POSITION = new Point(8 * SCALE * 12, 8 * SCALE * 0)
-const HOME_POSTION = new Point(14 * SCALE * -4, 8 * SCALE * 0)
-const ROOM_POSTION = new Point(14 * SCALE * -4, 8 * SCALE * 0)
 
 class PlayerModel {
     position: Point
@@ -84,9 +66,9 @@ class GridView extends BaseParentView {
     private wall_left: Sprite;
     private wall_right: Sprite;
     private empty: Sprite;
-    private baken: Sprite;
     private wall_top: Sprite;
     private wall_bottom: Sprite;
+    private sprite
 
     constructor(model: GridModel, sheet: Sheet) {
         super('grid-view')
@@ -102,24 +84,27 @@ class GridView extends BaseParentView {
     draw(g: CanvasSurface): void {
         g.ctx.imageSmoothingEnabled = false
         g.fillBackgroundSize(this.size(), 'white')
+        this.sprite = new Image()
+        this.sprite.src = Fruit
+
         this.model.forEach((w, x, y) => {
             let color = 'white'
             if (w === EMPTY) color = 'white'
             if (w === WALL) color = 'teal'
-            if (w === FRUIT) color = 'red'
             let xx = x * 8 * SCALE
             let yy = y * 8 * SCALE
             g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
             let pt = new Point(xx,yy)
             if (w === EMPTY) g.draw_sprite(pt, this.empty)
+            if (w === FRUIT) g.ctx.drawImage(this.sprite,183 ,257, 700,40)
+
             if (w === WALL) {
                 if (x === 0) g.draw_sprite(pt, this.wall_left)
                 if (x === this.model.w - 1) g.draw_sprite(pt, this.wall_right)
                 if (y === 0) g.draw_sprite(pt, this.wall_top)
                 if (y === this.model.w - 1) g.draw_sprite(pt, this.wall_bottom)
             }
-            if (w === BAKEN) g.draw_sprite(pt, this.baken,)
-
+                    
 
 
 
@@ -136,55 +121,10 @@ class GridView extends BaseParentView {
     }
 
 }
-let numColumns = 5;
-let numRows = 2;
 
 
 
 
-
-
-class RoomView extends BaseView {
-    // private score: ScoreModel;
-    // private font: SpriteFont;
-    // private Baken: BakenModel;
-
-    constructor() {
-        super('score-view')
-        // this.score = score;
-        // this.Baken == baken;
-        // this.font = font;
-
-    }
-
-
-    draw(g: CanvasSurface): void {
-        g.ctx.save()
-        g.ctx.translate(this.position().x, this.position().y)
-        // g.fillBackgroundSize(this.size(),'red')
-        //this.set_size(new Size(,480))
-        g.fillBackgroundSize(this.size(), '#4287f5')
-
-
-        let lines = [
-            // `Baken ${this.score.lives}`,
-            // `Coins ${this.score.coin}`,
-            // `CookedBaken ${this.score.CookedBaken}`,
-
-
-        ]
-        lines.forEach((str, i) => {
-            g.fillStandardText(str, 10, 16 * i * 4 + 32, 'base', 2)
-        })
-        g.ctx.restore()
-    }
-    
-
-    layout(g: CanvasSurface, available: Size): Size {
-        this.set_size(new Size(8 * SCALE * 18, 8 * SCALE * 18))
-        return this.size()
-    }
-}
 
 class SplashView extends BaseView {
     constructor() {
@@ -200,10 +140,9 @@ class SplashView extends BaseView {
         g.ctx.restore()
         let x = 340
         g.fillBackgroundSize(this.size(), 'rgba(51,255,175')
-        g.fillStandardText('Cook The Baken', x, 145, 'base', 2)
+        g.fillStandardText('UnderCooked', x, 145, 'base', 2)
         let lines = [
             'Arrow keys to move',
-            `'p' switch colors`,
             'Press Any Key To Start'
         ]
         lines.forEach((str, i) => {
@@ -225,16 +164,13 @@ class SplashView extends BaseView {
 
 class PlayerView extends BaseView {
     private image
-    private sprite
 
     private model: PlayerModel;
     constructor(model:PlayerModel) {
         super('image-view')
         this.model = model
         this.image = new Image()
-        this.sprite = new Image()
         this.image.src = IdleImage
-        this.sprite.src = Fruit
         //this.image2.src = Fruit
     }
     draw(g: CanvasSurface):void {
@@ -245,7 +181,6 @@ class PlayerView extends BaseView {
             this.model.position.x*8*SCALE - 5,
             this.model.position.y*8*SCALE - 7,)
         g.ctx.beginPath();
-        g.ctx.drawImage(this.sprite,183 ,257, 700,40)
         g.ctx.fill()
         g.ctx.restore()
 
@@ -288,23 +223,6 @@ export async function start() {
 
     let image_view = new PlayerView(baken);
     root.add(image_view)
-
-
-
-
-
-
-
-
-
-    
-    let room_view = new RoomView();
-    room_view.set_position(ROOM_POSTION)
-    root.add(room_view)
-
-
-    room_view.set_visible(false)
-
     let splash_layer = new SplashView();
     root.add(splash_layer);
 
@@ -364,7 +282,7 @@ export async function start() {
         board.set_xy(4,11,WALL)
         board.set_xy(5,11,WALL)
         if (baken.FruitVisable === true) {
-        board.set_xy(8,11,FRUIT)
+        board.set_xy(8,11, FRUIT)
         } else {
             baken.FruitVisable = false
             board.set_xy(8,11,EMPTY)
