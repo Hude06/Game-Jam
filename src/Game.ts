@@ -26,7 +26,7 @@ import { type } from "express/lib/response";
 
 
 var GRAVITY = 0.02
-const JUMP_POWER = -0.5
+const JUMP_POWER = -0.51
 const SCALE = 3
 const START_POSITION = new Point(15, 18)
 const CANVAS_SIZE = new Size(46, 20)
@@ -45,6 +45,7 @@ class PlayerModel {
     vx: number
     can_jump: boolean
     FruitVisable: boolean
+    MonsterVisable: boolean
 
     constructor() {
         this.position = new Point(0, 0)
@@ -54,6 +55,8 @@ class PlayerModel {
         this.vx = 0
         this.can_jump = false
         this.FruitVisable = true
+        this.MonsterVisable = true
+
 
     }
 
@@ -99,7 +102,7 @@ class GridView extends BaseParentView {
             g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
             let pt = new Point(xx,yy)
             if (w === EMPTY) g.draw_sprite(pt, this.empty)
-            if (w === FRUIT) g.ctx.drawImage(this.sprite, 300 ,26, 700,40)
+            if (w === FRUIT) g.ctx.drawImage(this.sprite, 300 ,26, 544,32)
             if (w === WALL) {
                 if (x === 0) g.draw_sprite(pt, this.wall_left)
                 if (x === this.model.w - 1) g.draw_sprite(pt, this.wall_right)
@@ -283,19 +286,27 @@ export async function start() {
         board.set_xy(3,11,WALL)
         board.set_xy(4,11,WALL)
         board.set_xy(5,11,WALL)
-        board.set_xy(1,5,MONSTER)
-
-
+        board.set_xy(6,11,WALL)
         if (baken.FruitVisable === true) {
         board.set_xy(8, 11, FRUIT)
         } else {
+        }
+        if (baken.MonsterVisable === true) {
+            board.set_xy(1,10,MONSTER)
+        } else {
 
         }
+        if (spot === MONSTER){ 
+            board.set_xy(1,10,EMPTY)
+            baken.MonsterVisable = false
+            board.set_xy(5,10,MONSTER)
+
+
+        } else {}
         if (spot === FRUIT) {
             baken.can_jump = true
             baken.FruitVisable = false
             baken.vx = 0
-
             board.set_xy(8,11,EMPTY)
             return
         }
