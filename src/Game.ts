@@ -61,10 +61,6 @@ class PlayerModel {
     }
 
 }
-
-
-
-
 class GridView extends BaseParentView {
     private model: GridModel;
     private wall_left: Sprite;
@@ -102,7 +98,7 @@ class GridView extends BaseParentView {
             g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
             let pt = new Point(xx,yy)
             if (w === EMPTY) g.draw_sprite(pt, this.empty)
-            if (w === FRUIT) g.ctx.drawImage(this.sprite, 300 ,26, 544,32)
+            if (w === FRUIT) g.ctx.drawImage(this.sprite, 188 ,260, 544,32)
             if (w === WALL) {
                 if (x === 0) g.draw_sprite(pt, this.wall_left)
                 if (x === this.model.w - 1) g.draw_sprite(pt, this.wall_right)
@@ -288,7 +284,7 @@ export async function start() {
         board.set_xy(5,11,WALL)
         board.set_xy(6,11,WALL)
         if (baken.FruitVisable === true) {
-        board.set_xy(8, 11, FRUIT)
+        board.set_xy(10, 11, FRUIT)
         } else {
         }
         if (baken.MonsterVisable === true) {
@@ -300,8 +296,6 @@ export async function start() {
             board.set_xy(1,10,EMPTY)
             baken.MonsterVisable = false
             board.set_xy(5,10,MONSTER)
-
-
         } else {}
         if (spot === FRUIT) {
             baken.can_jump = true
