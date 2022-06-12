@@ -3,7 +3,7 @@
 }
 
 body {
-  background-color: #0ff;
+  background-color: #0655ff;
   flex-direction: column;
   align-items: center;
   display: flex;
@@ -13,14 +13,6 @@ h1 {
   text-align: center;
   font-family: Anton, sans-serif;
   font-size: 60px;
-}
-
-#center {
-  margin-top: 200px;
-}
-
-canvas {
-  background-color: #0ff;
 }
 
 /*# sourceMappingURL=index.2cdaf7bc.css.map */

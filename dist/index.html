@@ -537,17 +537,20 @@ var _jumpPngDefault = parcelHelpers.interopDefault(_jumpPng);
 // @ts-ignore
 var _strawberryPng = require("../assets/Free/Items/Fruits/Strawberry.png");
 var _strawberryPngDefault = parcelHelpers.interopDefault(_strawberryPng);
+// @ts-ignore
+var _jump32X32Png = require("../Main Characters/Pink Man/Jump (32x32).png");
+var _jump32X32PngDefault = parcelHelpers.interopDefault(_jump32X32Png);
 var GRAVITY = 0.02;
 const JUMP_POWER = -0.52;
 const SCALE = 3;
 const START_POSITION = new (0, _thneedGfx.Point)(15, 18);
-const CANVAS_SIZE = new (0, _thneedGfx.Size)(46, 20);
+const CANVAS_SIZE = new (0, _thneedGfx.Size)(20, 20);
 const BOARD_SIZE = new (0, _thneedGfx.Size)(20, 20);
 const EMPTY = 0;
 const WALL = 1;
 const FRUIT = 2;
 const MONSTER = 3;
-const GRID_POSITION = new (0, _thneedGfx.Point)(8 * SCALE * 12, 8 * SCALE * 0);
+const GRID_POSITION = new (0, _thneedGfx.Point)(0 * SCALE * 12, 8 * SCALE * 0);
 class PlayerModel {
     constructor(){
         this.position = new (0, _thneedGfx.Point)(0, 0);
@@ -572,22 +575,26 @@ class GridView extends (0, _thneedGfx.BaseParentView) {
     }
     draw(g) {
         g.ctx.imageSmoothingEnabled = false;
-        g.fillBackgroundSize(this.size(), "#cccccc");
+        g.fillBackgroundSize(this.size(), "#c2c1c0");
         this.sprite = new Image();
+        this.monster = new Image();
         this.sprite.src = (0, _strawberryPngDefault.default);
+        this.monster.src = (0, _jump32X32PngDefault.default);
         this.model.forEach((w, x, y)=>{
             let color = "white";
             if (w === EMPTY) color = "white";
             if (w === WALL) color = "teal";
-            if (w === MONSTER) color = "orange";
+            if (w === MONSTER) color = "#c2c1c0";
             if (w === FRUIT) color = "red";
             let xx = x * 8 * SCALE;
             let yy = y * 8 * SCALE;
-            //            g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
             let pt = new (0, _thneedGfx.Point)(xx, yy);
             if (w === EMPTY) g.draw_sprite(pt, this.empty);
             if (w === FRUIT) g.ctx.drawImage(this.sprite, 236, 260, 544, 30);
-            if (w === MONSTER) g.fill(new (0, _thneedGfx.Rect)(xx, yy, 8 * SCALE, 8 * SCALE), color);
+            if (w === MONSTER) {
+                g.fill(new (0, _thneedGfx.Rect)(xx, yy, 8 * SCALE, 8 * SCALE), color);
+                g.ctx.drawImage(this.monster, 42, 230, 32, 34);
+            }
             if (w === WALL) {
                 g.fill(new (0, _thneedGfx.Rect)(xx, yy, 8 * SCALE, 8 * SCALE), color);
                 if (x === 0) g.draw_sprite(pt, this.wall_left);
@@ -618,13 +625,13 @@ class SplashView extends (0, _thneedGfx.BaseView) {
         g.ctx.restore();
         let x = 340;
         g.fillBackgroundSize(this.size(), "rgba(51,255,175");
-        g.fillStandardText("UnderCooked", x, 145, "base", 2);
+        g.fillStandardText("UnderCooked", 140, 145, "base", 2);
         let lines = [
             "Arrow keys to move",
             "Press Any Key To Start"
         ];
         lines.forEach((str, i)=>{
-            g.fillStandardText(str, 262, 220 + i * 32, "base", 1);
+            g.fillStandardText(str, 140, 220 + i * 32, "base", 1);
         });
     }
     layout(g, available) {
@@ -644,7 +651,6 @@ class PlayerView extends (0, _thneedGfx.BaseView) {
     //this.image2.src = Fruit
     }
     draw(g) {
-        // g.fillBackgroundSize(this.size(),'red')
         g.ctx.save();
         g.ctx.translate(GRID_POSITION.x, GRID_POSITION.y);
         g.ctx.drawImage(this.image, this.model.position.x * 8 * SCALE - 5, this.model.position.y * 8 * SCALE - 7);
@@ -735,7 +741,6 @@ async function start() {
         if (spot === MONSTER) {
             board.set_xy(2, 10, EMPTY);
             baken.MonsterVisable = false;
-            board.set_xy(5, 10, MONSTER);
         }
         if (spot === FRUIT) {
             baken.can_jump = true;
@@ -764,7 +769,7 @@ async function start() {
     requestAnimationFrame(refresh);
 }
 
-},{"thneed-gfx":"1LEIW","./Game.json":"f5fNI","./models":"kqDow","./app-model":"2XscX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../Main Characters/Virtual Guy/Jump.png":"b7T94","../assets/Free/Items/Fruits/Strawberry.png":"7MY4Z"}],"1LEIW":[function(require,module,exports) {
+},{"thneed-gfx":"1LEIW","./Game.json":"f5fNI","./models":"kqDow","./app-model":"2XscX","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","../Main Characters/Virtual Guy/Jump.png":"b7T94","../assets/Free/Items/Fruits/Strawberry.png":"7MY4Z","../Main Characters/Pink Man/Jump (32x32).png":"l7ofE"}],"1LEIW":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CoolEvent", ()=>$8a29e9b0d3dc349c$export$aa8e9462579016b1);
@@ -3946,6 +3951,9 @@ exports.getOrigin = getOrigin;
 
 },{}],"7MY4Z":[function(require,module,exports) {
 module.exports = require("./helpers/bundle-url").getBundleURL("fjtzB") + "Strawberry.2dde3576.png" + "?" + Date.now();
+
+},{"./helpers/bundle-url":"lgJ39"}],"l7ofE":[function(require,module,exports) {
+module.exports = require("./helpers/bundle-url").getBundleURL("fjtzB") + "Jump (32x32).91ed0587.png" + "?" + Date.now();
 
 },{"./helpers/bundle-url":"lgJ39"}]},["9nmnc","81u0S"], "81u0S", "parcelRequire46ba")
 

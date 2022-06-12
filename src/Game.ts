@@ -22,18 +22,21 @@ import {Doc} from "./app-model";
 import IdleImage from "../Main Characters/Virtual Guy/Jump.png"
 // @ts-ignore
 import Fruit from "../assets/Free/Items/Fruits/Strawberry.png"
+// @ts-ignore
+
+import monster from "../Main Characters/Pink Man/Jump (32x32).png"
 import { type } from "express/lib/response";
 var GRAVITY = 0.02
 const JUMP_POWER = -0.52
 const SCALE = 3
 const START_POSITION = new Point(15, 18)
-const CANVAS_SIZE = new Size(46, 20)
-const BOARD_SIZE = new Size(20, 20)
+const CANVAS_SIZE = new Size(20, 20)
+const BOARD_SIZE = new Size(20 , 20 )
 const EMPTY = 0;
 const WALL = 1;
 const FRUIT = 2;
 const MONSTER = 3;
-const GRID_POSITION = new Point(8 * SCALE * 12, 8 * SCALE * 0)
+const GRID_POSITION = new Point(0 * SCALE * 12, 8 * SCALE * 0)
 class PlayerModel {
     position: Point
     direction: Point
@@ -65,6 +68,7 @@ class GridView extends BaseParentView {
     private wall_top: Sprite;
     private wall_bottom: Sprite;
     private sprite
+    private monster
 
     constructor(model: GridModel, sheet: Sheet) {
         super('grid-view')
@@ -79,26 +83,31 @@ class GridView extends BaseParentView {
 
     draw(g: CanvasSurface): void {
         g.ctx.imageSmoothingEnabled = false
-        g.fillBackgroundSize(this.size(), '#cccccc')
+        g.fillBackgroundSize(this.size(), '#c2c1c0')
         this.sprite = new Image()
+        this.monster = new Image()
+
         this.sprite.src = Fruit
+        this.monster.src = monster
+
 
         this.model.forEach((w, x, y) => {
             let color = 'white'
             if (w === EMPTY) color = 'white'
             if (w === WALL) color = 'teal'
-            if (w === MONSTER) color = 'orange'
+            if (w === MONSTER) color = '#c2c1c0'
             if (w === FRUIT) color = 'red'
-
+            
             let xx = x * 8 * SCALE
             let yy = y * 8 * SCALE
-//            g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
             let pt = new Point(xx,yy)
             if (w === EMPTY) g.draw_sprite(pt, this.empty)
             if (w === FRUIT) g.ctx.drawImage(this.sprite, 188+6*8 ,260, 544,30)            
             if (w === MONSTER) {
-               g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
+                g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
+                g.ctx.drawImage(this.monster, 10+4*8 ,230, 32,34)
             }
+            
             if (w === WALL) {
                 g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
                 if (x === 0) g.draw_sprite(pt, this.wall_left)
@@ -127,12 +136,11 @@ class GridView extends BaseParentView {
 
 
 
-
 class SplashView extends BaseView {
     constructor() {
         super('splash-view');
     }
-
+    
     draw(g: CanvasSurface): void {
         g.fillBackgroundSize(this.size(), 'rgba(66, 135, 245)')
         g.ctx.save()
@@ -142,13 +150,13 @@ class SplashView extends BaseView {
         g.ctx.restore()
         let x = 340
         g.fillBackgroundSize(this.size(), 'rgba(51,255,175')
-        g.fillStandardText('UnderCooked', x, 145, 'base', 2)
+        g.fillStandardText('UnderCooked', 140   , 145, 'base', 2)
         let lines = [
             'Arrow keys to move',
             'Press Any Key To Start'
         ]
         lines.forEach((str, i) => {
-            g.fillStandardText(str, 262, 220 + i * 32, 'base', 1)
+            g.fillStandardText(str, 140, 220 + i * 32, 'base', 1)
         })
 
     }
@@ -176,7 +184,6 @@ class PlayerView extends BaseView {
         //this.image2.src = Fruit
     }
     draw(g: CanvasSurface):void {
-        // g.fillBackgroundSize(this.size(),'red')
         g.ctx.save()
         g.ctx.translate(GRID_POSITION.x, GRID_POSITION.y)
         g.ctx.drawImage(this.image, 
@@ -296,8 +303,9 @@ export async function start() {
         if (spot === MONSTER){ 
             board.set_xy(2,10,EMPTY)
             baken.MonsterVisable = false
-            board.set_xy(5,10,MONSTER)
-        } 
+        }
+
+
         if (spot === FRUIT) {
             baken.can_jump = true
             baken.FruitVisable = false
