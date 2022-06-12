@@ -23,10 +23,8 @@ import IdleImage from "../Main Characters/Virtual Guy/Jump.png"
 // @ts-ignore
 import Fruit from "../assets/Free/Items/Fruits/Strawberry.png"
 import { type } from "express/lib/response";
-
-
 var GRAVITY = 0.02
-const JUMP_POWER = -0.51
+const JUMP_POWER = -0.52
 const SCALE = 3
 const START_POSITION = new Point(15, 18)
 const CANVAS_SIZE = new Size(46, 20)
@@ -36,7 +34,6 @@ const WALL = 1;
 const FRUIT = 2;
 const MONSTER = 3;
 const GRID_POSITION = new Point(8 * SCALE * 12, 8 * SCALE * 0)
-
 class PlayerModel {
     position: Point
     direction: Point
@@ -46,7 +43,6 @@ class PlayerModel {
     can_jump: boolean
     FruitVisable: boolean
     MonsterVisable: boolean
-
     constructor() {
         this.position = new Point(0, 0)
         this.direction = new Point(0, -1)
@@ -83,7 +79,7 @@ class GridView extends BaseParentView {
 
     draw(g: CanvasSurface): void {
         g.ctx.imageSmoothingEnabled = false
-        g.fillBackgroundSize(this.size(), 'white')
+        g.fillBackgroundSize(this.size(), '#cccccc')
         this.sprite = new Image()
         this.sprite.src = Fruit
 
@@ -92,14 +88,19 @@ class GridView extends BaseParentView {
             if (w === EMPTY) color = 'white'
             if (w === WALL) color = 'teal'
             if (w === MONSTER) color = 'orange'
+            if (w === FRUIT) color = 'red'
 
             let xx = x * 8 * SCALE
             let yy = y * 8 * SCALE
-            g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
+//            g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
             let pt = new Point(xx,yy)
             if (w === EMPTY) g.draw_sprite(pt, this.empty)
-            if (w === FRUIT) g.ctx.drawImage(this.sprite, 188+6*8 ,260, 544,32)            
+            if (w === FRUIT) g.ctx.drawImage(this.sprite, 188+6*8 ,260, 544,30)            
+            if (w === MONSTER) {
+               g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
+            }
             if (w === WALL) {
+                g.fill(new Rect(xx, yy, 1 * 8 * SCALE, 1 * 8 * SCALE), color);
                 if (x === 0) g.draw_sprite(pt, this.wall_left)
                 if (x === this.model.w - 1) g.draw_sprite(pt, this.wall_right)
                 if (y === 0) g.draw_sprite(pt, this.wall_top)
@@ -184,6 +185,7 @@ class PlayerView extends BaseView {
         g.ctx.beginPath();
         g.ctx.fill()
         g.ctx.restore()
+        g.ctx.imageSmoothingEnabled = false;
 
           
     }
@@ -246,7 +248,7 @@ export async function start() {
             if (e.key === 'ArrowUp' || e.key==='w') {
                 if(baken.can_jump === true) {
                     baken.vx = JUMP_POWER
-                    turn_to(new Point(+0, - 2));
+                    turn_to(new Point(+0, -1));
                 }
             }
         }
@@ -287,12 +289,15 @@ export async function start() {
         board.set_xy(10, 11, FRUIT)
         } else {
         }
+        if (baken.MonsterVisable === true ){
+            board.set_xy(2,10,MONSTER)
 
+        }
         if (spot === MONSTER){ 
-            board.set_xy(1,10,EMPTY)
+            board.set_xy(2,10,EMPTY)
             baken.MonsterVisable = false
             board.set_xy(5,10,MONSTER)
-        } else {}
+        } 
         if (spot === FRUIT) {
             baken.can_jump = true
             baken.FruitVisable = false
